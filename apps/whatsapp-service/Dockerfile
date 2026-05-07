@@ -1,5 +1,5 @@
 # Build context: ./apps/whatsapp-service (paths are relative to that dir)
-FROM golang:1.23-alpine AS builder
+FROM golang:1.25-alpine AS builder
 RUN apk add --no-cache gcc musl-dev
 WORKDIR /build
 COPY go.mod go.sum ./
