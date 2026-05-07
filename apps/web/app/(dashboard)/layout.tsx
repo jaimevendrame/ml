@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { SignOutButton } from '@/components/SignOutButton'
 
 const NAV = [
   { href: '/ofertas', label: '🏷️ Ofertas' },
@@ -22,12 +23,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </Link>
         ))}
         <div className="mt-auto">
-          <a
-            href="/api/auth/sign-out"
-            className="px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-gray-100 block"
-          >
-            Sair
-          </a>
+          <SignOutButton />
         </div>
       </aside>
       <main className="flex-1 p-8 overflow-auto">{children}</main>
