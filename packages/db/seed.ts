@@ -2,7 +2,8 @@ import postgres from 'postgres'
 import { drizzle } from 'drizzle-orm/postgres-js'
 import * as schema from './schema/index'
 
-const client = postgres(process.env.DATABASE_URL!)
+const DEV_URL = 'postgres://ofertaml:devpass@localhost:5532/ofertaml'
+const client = postgres(process.env.DATABASE_URL ?? DEV_URL)
 const db = drizzle(client, { schema })
 
 async function seed() {
