@@ -63,10 +63,21 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > /tmp/deploy_key
           chmod 600 /tmp/deploy_key
+          # Transferir compose actualizado e fazer stack deploy com nova tag
+          scp -i /tmp/deploy_key -o StrictHostKeyChecking=no \
+            deploy/docker-compose.prod.yml root@$VPS_HOST:/tmp/ofertaml-compose.yml
           ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no root@$VPS_HOST "
-            echo '${{ secrets.GHCR_PAT }}' | docker login ghcr.io -u jaimevendrame --password-stdin &&
-            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/web:${IMAGE_TAG} ofertaml_web &&
-            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/whatsapp-service:${IMAGE_TAG} ofertaml_whatsapp &&
-            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/scraper-service:${IMAGE_TAG} ofertaml_scraper &&
-            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/link-builder-worker:${IMAGE_TAG} ofertaml_link-builder
+            echo '${{ secrets.GHCR_PAT }}' | docker login ghcr.io -u jaimevendrame --password-stdin
+            GHCR_IMAGE_TAG=${IMAGE_TAG} \
+            POSTGRES_USER=ofertaml \
+            POSTGRES_PASSWORD='${{ secrets.POSTGRES_PASSWORD }}' \
+            POSTGRES_DB=ofertaml \
+            DATABASE_URL='${{ secrets.DATABASE_URL }}' \
+            BETTER_AUTH_SECRET='${{ secrets.BETTER_AUTH_SECRET }}' \
+            BETTER_AUTH_URL=https://ml.cotec.net.br \
+            ML_AFFILIATE_TAG='${{ secrets.ML_AFFILIATE_TAG }}' \
+            INTERNAL_SERVICE_TOKEN='${{ secrets.INTERNAL_SERVICE_TOKEN }}' \
+            DOMAIN=ml.cotec.net.br \
+            TRAEFIK_NETWORK=network_public \
+            docker stack deploy --with-registry-auth -c /tmp/ofertaml-compose.yml ofertaml
           "
