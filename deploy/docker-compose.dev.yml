@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5532:5432"
+    environment:
+      POSTGRES_USER: ofertaml
+      POSTGRES_PASSWORD: devpass
+      POSTGRES_DB: ofertaml
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ofertaml"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+volumes:
+  postgres_dev_data:
