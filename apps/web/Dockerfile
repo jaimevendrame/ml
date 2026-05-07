@@ -13,7 +13,11 @@ COPY packages/db/ ./packages/db/
 COPY apps/web/ ./apps/web/
 
 WORKDIR /app/apps/web
-RUN pnpm build
+# Env placeholders para Next.js build (valores reais injectados em runtime)
+RUN DATABASE_URL="postgres://x:x@localhost:5432/x" \
+    BETTER_AUTH_SECRET="00000000000000000000000000000000" \
+    BETTER_AUTH_URL="http://localhost:3500" \
+    pnpm build
 
 # Runtime stage
 FROM node:20-alpine AS runner
