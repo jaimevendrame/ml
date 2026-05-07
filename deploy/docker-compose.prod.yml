@@ -69,14 +69,14 @@ services:
       SCRAPER_SERVICE_URL: http://scraper:8081
       LINK_BUILDER_SERVICE_URL: http://link-builder:8082
       INTERNAL_SERVICE_TOKEN: ${INTERNAL_SERVICE_TOKEN}
-    labels:
-      - "traefik.enable=true"
-      - "traefik.docker.network=network_public"
-      - "traefik.http.routers.ofertaml.rule=Host(`${DOMAIN}`)"
-      - "traefik.http.routers.ofertaml.entrypoints=websecure"
-      - "traefik.http.routers.ofertaml.tls.certresolver=letsencrypt"
-      - "traefik.http.services.ofertaml.loadbalancer.server.port=3000"
     deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=network_public"
+        - "traefik.http.routers.ofertaml.rule=Host(`${DOMAIN}`)"
+        - "traefik.http.routers.ofertaml.entrypoints=websecure"
+        - "traefik.http.routers.ofertaml.tls.certresolver=letsencrypt"
+        - "traefik.http.services.ofertaml.loadbalancer.server.port=3000"
       resources:
         limits:
           memory: 512M
