@@ -1,20 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { betterFetch } from '@better-fetch/fetch'
+import { auth } from '@/lib/auth'
 
-type Session = { user: { id: string; email: string } }
+export const runtime = 'nodejs'
 
-const PUBLIC = ['/login', '/signup', '/api/auth']
+const PUBLIC = ['/login', '/signup', '/api/auth', '/api/']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
   if (PUBLIC.some((p) => pathname.startsWith(p))) return NextResponse.next()
 
-  const { data: session } = await betterFetch<Session>('/api/auth/get-session', {
-    baseURL: request.nextUrl.origin,
-    headers: { cookie: request.headers.get('cookie') ?? '' },
-  })
+  const session = await auth.api.getSession({ headers: request.headers })
 
-  if (!session?.user) {
+  if (!session) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
