@@ -1,13 +1,12 @@
-# Build stage
+# Build context: ./apps/whatsapp-service (paths are relative to that dir)
 FROM golang:1.23-alpine AS builder
 RUN apk add --no-cache gcc musl-dev
 WORKDIR /build
-COPY apps/whatsapp-service/go.mod apps/whatsapp-service/go.sum ./
+COPY go.mod go.sum ./
 RUN go mod download
-COPY apps/whatsapp-service/ .
+COPY . .
 RUN CGO_ENABLED=1 go build -ldflags="-s -w" -o /server ./cmd/server
 
-# Final stage
 FROM alpine:3.20
 RUN apk add --no-cache ca-certificates tzdata
 WORKDIR /app

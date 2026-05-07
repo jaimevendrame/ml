@@ -1,12 +1,11 @@
-# Build stage — compile TS
+# Build context: . (repo root)
 FROM mcr.microsoft.com/playwright:v1.48.0-jammy AS builder
 WORKDIR /build
-COPY apps/scraper-service/package*.json ./
-RUN npm ci
+COPY apps/scraper-service/package.json ./
+RUN npm install
 COPY apps/scraper-service/ .
 RUN npx tsc
 
-# Runtime stage
 FROM mcr.microsoft.com/playwright:v1.48.0-jammy
 WORKDIR /app
 COPY --from=builder /build/dist ./dist
