@@ -54,5 +54,19 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Portainer Webhook
-        run: curl -fsS -X POST "${{ secrets.PORTAINER_WEBHOOK_URL }}"
+      - uses: actions/checkout@v4
+      - name: Deploy via SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_DEPLOY_KEY }}
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > /tmp/deploy_key
+          chmod 600 /tmp/deploy_key
+          ssh -i /tmp/deploy_key -o StrictHostKeyChecking=no root@$VPS_HOST "
+            echo '${{ secrets.GHCR_PAT }}' | docker login ghcr.io -u jaimevendrame --password-stdin &&
+            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/web:${IMAGE_TAG} ofertaml_web &&
+            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/whatsapp-service:${IMAGE_TAG} ofertaml_whatsapp &&
+            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/scraper-service:${IMAGE_TAG} ofertaml_scraper &&
+            docker service update --with-registry-auth --image ghcr.io/jaimevendrame/ml/link-builder-worker:${IMAGE_TAG} ofertaml_link-builder
+          "
