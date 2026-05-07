@@ -1,0 +1,23 @@
+{
+  "name": "@ofertaml/link-builder-worker",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ofertaml/db": "workspace:*",
+    "@hono/node-server": "^1.13.0",
+    "drizzle-orm": "^0.43.0",
+    "hono": "^4.7.0",
+    "postgres": "^3.4.5",
+    "tsx": "^4.19.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  }
+}
