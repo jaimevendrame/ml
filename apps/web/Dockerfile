@@ -30,4 +30,5 @@ COPY --from=builder /app/apps/web/public ./apps/web/public
 
 EXPOSE 3000
 ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
 CMD ["node", "apps/web/server.js"]

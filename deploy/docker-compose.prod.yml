@@ -75,7 +75,7 @@ services:
         - "traefik.docker.network=network_public"
         - "traefik.http.routers.ofertaml.rule=Host(`${DOMAIN}`)"
         - "traefik.http.routers.ofertaml.entrypoints=websecure"
-        - "traefik.http.routers.ofertaml.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.ofertaml.tls.certresolver=letsencryptresolver"
         - "traefik.http.services.ofertaml.loadbalancer.server.port=3000"
       resources:
         limits:
